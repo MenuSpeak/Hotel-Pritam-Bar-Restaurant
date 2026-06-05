@@ -1,0 +1,2096 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Hotel Pritam</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Menu Hidden by Default */
+        .menu {
+            display: none;
+        }
+
+        .menu.visible {
+            display: block;
+        }
+
+        /* Section Buttons - Liquor & Food */
+        .section-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0 20px;
+            padding: 0 15px;
+        }
+
+        .section-btn {
+            flex: 1;
+            max-width: 300px;
+            padding: 18px 30px;
+            border-radius: 50px;
+            border: none;
+            font-size: 24px;
+            font-weight: 700;
+            font-family: var(--ff-heading);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .section-btn:hover::before {
+            left: 100%;
+        }
+
+        .section-btn.liquor-btn {
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            color: #FFD700;
+            border: 2px solid #FFD700;
+        }
+
+        .section-btn.food-btn {
+            background: linear-gradient(135deg, #2E7D32, #4CAF50);
+            color: #FFFFFF;
+            border: 2px solid #FFA000;
+        }
+
+        .section-btn.active {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-btn.liquor-btn.active {
+            box-shadow: 0 10px 30px rgba(210, 105, 30, 0.4);
+        }
+
+        .section-btn.food-btn.active {
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Responsive section buttons */
+        @media (max-width: 768px) {
+            .section-buttons {
+                gap: 15px;
+                margin: 20px 0 15px;
+            }
+            
+            .section-btn {
+                padding: 14px 20px;
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .section-btn {
+                max-width: 100%;
+                width: 100%;
+                padding: 12px 15px;
+                font-size: 18px;
+            }
+        }
+
+        /* Tabs Navigation - Category Buttons */
+        .tabs-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .tabs-scroll-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 15px;
+            border: 2px solid rgba(212, 175, 55, 0.25);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
+
+        .tabs-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tab {
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: transparent;
+            border: 1.5px solid rgba(212, 175, 55, 0.2);
+            font-size: 14px;
+            color: var(--muted);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-break: break-word;
+            line-height: 1.3;
+            width: 100%;
+        }
+
+        .tab.active {
+            background: linear-gradient(90deg, var(--gold1), var(--gold2));
+            color: #0b0b0d;
+            border: 1.5px solid var(--gold1);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.2);
+            font-weight: 600;
+            transform: translateY(-2px);
+        }
+
+        /* Hover effect for better UX */
+        .tab:hover {
+            border-color: var(--gold1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(212, 175, 55, 0.15);
+        }
+
+        /* Tablet styles */
+        @media (min-width: 768px) {
+            .tabs-scroll-wrapper {
+                padding: 18px;
+                gap: 20px;
+            }
+            
+            .tabs-column {
+                gap: 12px;
+            }
+            
+            .tab {
+                padding: 14px 18px;
+                font-size: 15px;
+            }
+        }
+
+        /* Desktop styles */
+        @media (min-width: 1024px) {
+            .tabs-scroll-wrapper {
+                padding: 20px;
+                gap: 25px;
+            }
+            
+            .tabs-column {
+                gap: 14px;
+            }
+            
+            .tab {
+                padding: 14px 20px;
+                font-size: 15px;
+            }
+        }
+
+        /* Mobile-specific adjustments */
+        @media (max-width: 767px) {
+            .tab {
+                padding: 10px 14px;
+                font-size: 13px;
+            }
+
+            .tabs-scroll-wrapper {
+                padding: 12px;
+                border-width: 1.5px;
+                gap: 10px;
+            }
+            
+            .tabs-column {
+                gap: 8px;
+            }
+        }
+
+        /* Small mobile devices */
+        @media (max-width: 480px) {
+            .tabs-scroll-wrapper {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                padding: 10px;
+                border-radius: 14px;
+            }
+            
+            .tab {
+                padding: 8px 10px;
+                font-size: 12.5px;
+                border-radius: 10px;
+            }
+            
+            .tabs-column {
+                gap: 6px;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        :root {
+            --bg: #0b0b0d;
+            --surface: #0f1114;
+            --muted: #9aa0a6;
+            --gold1: #d4af37;
+            --gold2: #ffcc66;
+            --accent: linear-gradient(90deg, var(--gold1), var(--gold2));
+            --glass: rgba(255, 255, 255, 0.03);
+            --card-radius: 16px;
+            --shadow: 0 10px 30px rgba(2, 6, 23, 0.6);
+            --glass-strong: rgba(255, 255, 255, 0.04);
+            --maxw: 1200px;
+            --gap: 20px;
+            --ff-heading: 'Playfair Display', serif;
+            --ff-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+            --orange: #ff9800;
+            --green: #4CAF50;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-size: 16px;
+        }
+
+        body {
+            position: relative;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background image layer */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('bg.png') no-repeat center center/cover;
+            filter: grayscale(100%);
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        body {
+            background: radial-gradient(1200px 600px at 10% 10%, rgba(212, 175, 55, 0.06), transparent 6%),
+                radial-gradient(1000px 500px at 95% 90%, rgba(255, 204, 102, 0.04), transparent 8%),
+                var(--bg);
+            color: #e8e6e3;
+            font-family: var(--ff-ui);
+            -webkit-font-smoothing: antialiased;
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            line-height: 1.5;
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--maxw);
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap);
+        }
+
+        /* Cafe Header - Original Style */
+        .cafe-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        .cafe-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--gold1);
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+            line-height: 1;
+            margin-bottom: 5px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .cafe-name::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 2px;
+            background: var(--gold1);
+        }
+
+        .cafe-subtitle {
+            font-size: 1.2rem;
+            color: var(--orange);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .location-info {
+            font-size: 1rem;
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+
+        .location-text {
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .address {
+            color: var(--green);
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+        }
+
+        .mobile-numbers {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+        }
+
+        .veg-nonveg {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .veg,
+        .nonveg {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .veg {
+            color: #2e7d32;
+            background: rgba(46, 125, 50, 0.1);
+        }
+
+        .nonveg {
+            color: #c62828;
+            background: rgba(198, 40, 40, 0.1);
+        }
+
+        .veg:hover,
+        .nonveg:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .symbol {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .veg .symbol {
+            background: #4caf50;
+            border: 2px solid #2e7d32;
+        }
+
+        .nonveg .symbol {
+            background: #f44336;
+            border: 2px solid #c62828;
+        }
+
+        /* Location Link Section - Added at bottom */
+        .location-link-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(6px);
+            text-align: center;
+        }
+
+        .location-link-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .location-link-header h3 {
+            font-family: var(--ff-heading);
+            color: var(--gold2);
+            font-size: 1.3rem;
+            margin: 0;
+        }
+
+        .location-icon {
+            width: 24px;
+            height: 24px;
+            color: var(--gold1);
+        }
+
+        .map-link-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .map-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(90deg, var(--gold1), var(--gold2));
+            color: #0b0b0d;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .map-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        .map-link svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Header and Navigation */
+        .header {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 10px;
+        }
+
+        .brand {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--gold1), var(--gold2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0b0b0d;
+            font-family: var(--ff-heading);
+            font-size: 20px;
+            font-weight: 700;
+            box-shadow: 0 6px 22px rgba(212, 175, 55, 0.12);
+            flex-shrink: 0;
+        }
+
+        .brand-text h1 {
+            margin: 0;
+            font-family: var(--ff-heading);
+            font-size: 20px;
+            letter-spacing: 0.6px;
+        }
+
+        .brand-text p {
+            margin: 2px 0 0 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .search-container {
+            background: var(--glass);
+            backdrop-filter: blur(6px);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .search-container input {
+            background: transparent;
+            border: 0;
+            outline: 0;
+            color: inherit;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        /* Menu Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0.01));
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: 0 8px 24px rgba(2, 6, 23, 0.6);
+            transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.2, 1), box-shadow 0.28s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(2, 6, 23, 0.7);
+        }
+
+        .card-header {
+            display: flex;
+            gap: 12px;
+        }
+
+        .thumb {
+            width: 180px;
+            height: 180px;
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s;
+        }
+
+        .card:hover .thumb img {
+            transform: scale(1.06);
+        }
+
+        .card-info {
+            flex: 1;
+        }
+
+        .dish {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+            font-family: var(--ff-heading);
+            line-height: 1.3;
+        }
+
+        .desc {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .price {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--gold2);
+            flex-shrink: 0;
+        }
+
+        .tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 11px;
+            color: var(--muted);
+            background: transparent;
+        }
+
+        /* Add to Cart Button */
+        .btn-primary {
+            background: linear-gradient(90deg, var(--gold1), var(--gold2));
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            color: #0b0b0d;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+            font-size: 13px;
+            width: auto;
+            min-width: 100px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        /* Button Animation Effects */
+        .btn-primary.adding {
+            animation: addPulse 0.6s ease;
+        }
+
+        .btn-primary.added {
+            background: linear-gradient(90deg, #10b981, #059669);
+            animation: successPulse 0.8s ease;
+        }
+
+        @keyframes addPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+            }
+        }
+
+        @keyframes successPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
+            }
+
+            25% {
+                transform: scale(1.08);
+                box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+            }
+
+            50% {
+                transform: scale(0.95);
+                box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+            }
+
+            75% {
+                transform: scale(1.03);
+                box-shadow: 0 7px 25px rgba(16, 185, 129, 0.35);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
+            }
+        }
+
+        /* Cart Styles */
+        .cart-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .cart-button {
+            background: linear-gradient(90deg, var(--gold1), var(--gold2));
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.12);
+            cursor: pointer;
+            position: relative;
+            border: none;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .cart-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 11, 13, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 16px;
+        }
+
+        .cart-modal.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .cart-content {
+            background: var(--surface);
+            width: 100%;
+            max-width: 500px;
+            border-radius: var(--card-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            padding-bottom: 12px;
+        }
+
+        .cart-title {
+            font-family: var(--ff-heading);
+            font-size: 22px;
+            margin: 0;
+            color: var(--gold2);
+        }
+
+        .close-cart {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .cart-items {
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            margin: 0 0 4px 0;
+            font-size: 15px;
+        }
+
+        .item-price {
+            color: var(--gold2);
+            font-size: 14px;
+        }
+
+        .item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--muted);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .quantity {
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .remove-item {
+            background: transparent;
+            border: none;
+            color: #e74c3c;
+            cursor: pointer;
+            margin-left: 12px;
+            font-size: 18px;
+        }
+
+        .cart-empty {
+            text-align: center;
+            color: var(--muted);
+            padding: 20px 0;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .total-amount {
+            color: var(--gold2);
+        }
+
+        .cart-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        /* Add Another Item Button */
+        .btn-add-another {
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.1), rgba(255, 204, 102, 0.1));
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 12px 14px;
+            border-radius: 12px;
+            color: var(--gold2);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-add-another:hover {
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.15), rgba(255, 204, 102, 0.15));
+            border-color: var(--gold1);
+            transform: translateY(-2px);
+        }
+
+        .btn-add-another svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 3;
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            border: none;
+            padding: 14px 18px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 16px;
+        }
+
+        .btn-clear {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 12px 14px;
+            border-radius: 12px;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Delivery Options in Cart */
+        .delivery-options {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.015);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .options-title {
+            font-family: var(--ff-heading);
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--gold2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .options-title svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .delivery-option-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            color: var(--muted);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .option-btn:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .option-btn.active {
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.1), rgba(255, 204, 102, 0.1));
+            border-color: var(--gold1);
+            color: var(--gold2);
+        }
+
+        .option-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Delivery Forms */
+        .delivery-form {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .delivery-form.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--gold2);
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Customer Details Summary */
+        .customer-details-summary {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            display: none;
+        }
+
+        .customer-details-summary.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .summary-title {
+            font-weight: 600;
+            color: var(--gold2);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-title svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .summary-details {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .summary-details div {
+            margin-bottom: 5px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            color: var(--muted);
+            font-size: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            margin-top: 20px;
+        }
+
+        /* Gold Line */
+        .gold-line {
+            height: 3px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--gold1), var(--gold2));
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.08);
+            margin: 8px 0 16px 0;
+        }
+
+        /* Tablet and Desktop Styles */
+        @media (min-width: 768px) {
+            body {
+                padding: 24px;
+            }
+
+            .container {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 24px;
+                align-items: start;
+            }
+
+            .header {
+                grid-column: 1 / -1;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .brand {
+                flex: 1;
+            }
+
+            .search-container {
+                width: auto;
+                min-width: 300px;
+            }
+
+            .tabs-container {
+                grid-column: 1 / -1;
+            }
+
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cart-actions {
+                flex-direction: row;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .menu-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+
+            .cart-container,
+            .cart-modal,
+            .btn-ghost {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="container">
+        <!-- Cafe Header - Original Style -->
+        <div class="cafe-header">
+            <img src="logo.png" alt="Logo" style="width:400px; height:auto;">
+            <div class="cafe-name">HOTEL PRITAM</div>
+            <div class="cafe-subtitle"> AC BAR & RESTAURANT</div>
+            <div class="location-info">
+                <div class="location-text"></div>
+                <div class="address"></div>
+                <div class="mobile-numbers">Mo no.+91 98813 21514 / 86058 20555</div>
+            </div>
+            <div class="veg-nonveg">
+                <div class="veg">
+                    <span class="symbol"></span>
+                    <span>Veg</span>
+                </div>
+                <div class="nonveg">
+                    <span class="symbol"></span>
+                    <span>Non-Veg</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Buttons - Liquor & Food -->
+        <div class="section-buttons">
+            <button class="section-btn liquor-btn" id="liquorSectionBtn">🍸 BAR MENU</button>
+            <button class="section-btn food-btn" id="foodSectionBtn">🍽️ HOTEL MENU</button>
+        </div>
+
+        <!-- Main Menu - Hidden by Default -->
+        <main class="menu" id="mainMenu">
+            <div class="menu-head">
+                <div class="controls">
+                    <div class="search" role="search">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+                            <path d="M21 21l-4.35-4.35" stroke="rgba(255,255,255,0.6)" stroke-width="1.6"
+                                stroke-linecap="round" stroke-linejoin="round"></path>
+                            <circle cx="11" cy="11" r="6" stroke="rgba(255,255,255,0.6)" stroke-width="1.6"
+                                stroke-linecap="round" stroke-linejoin="round"></circle>
+                        </svg>
+                        <input id="search" placeholder="Search dishes, ingredients..." />
+                    </div>
+
+                    <div class="tabs-scroll-wrapper" id="tabsWrapper">
+                        <!-- Tabs will be dynamically populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <section class="menu-grid" id="menuGrid">
+                <!-- Cards injected by JS -->
+            </section>
+        </main>
+
+        <!-- Location Link Section - Added at bottom -->
+        <div class="location-link-section">
+            <div class="location-link-header">
+                <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                <h3>Find Us on Google Maps</h3>
+            </div>
+            <div class="map-link-container">
+                <a href="https://maps.app.goo.gl/oq5dvDPtQbo3ATQ79" target="_blank" class="map-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    Open in Google Maps
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Button -->
+    <div class="cart-container">
+        <button class="cart-button" id="cartButton">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <span class="cart-count" id="cartCount">0</span>
+        </button>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h3 class="cart-title">Your Order</h3>
+                <button class="close-cart" id="closeCart">&times;</button>
+            </div>
+
+            <!-- Delivery Options -->
+            <div class="delivery-options">
+                <h4 class="options-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Select Delivery Type
+                </h4>
+
+                <div class="delivery-option-buttons">
+                    <button class="option-btn active" id="restaurantOption"
+                        onclick="selectDeliveryOption('restaurant')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path
+                                d="M9 12v12M15 12v12M5 12l-2 9h18l-2-9M5 12V8c0-1.105.895-2 2-2h10c1.105 0 2 .895 2 2v4" />
+                            <circle cx="12" cy="6" r="2" />
+                        </svg>
+                        Restaurant
+                    </button>
+                    <button class="option-btn" id="homeDeliveryOption" onclick="selectDeliveryOption('home')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path
+                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        Home Delivery
+                    </button>
+                </div>
+
+                <!-- Restaurant Form -->
+                <div class="delivery-form active" id="restaurantForm">
+                    <div class="form-group">
+                        <label class="form-label" for="tableNumber">Table Number</label>
+                        <input type="text" id="tableNumber" class="form-input"
+                            placeholder="Enter your table number (e.g., Table 5, Booth 2)" />
+                    </div>
+                </div>
+
+                <!-- Home Delivery Form -->
+                <div class="delivery-form" id="homeDeliveryForm">
+                    <div class="form-group">
+                        <label class="form-label" for="customerName">Full Name</label>
+                        <input type="text" id="customerName" class="form-input" placeholder="Enter your full name" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="customerMobile">Mobile Number</label>
+                        <input type="tel" id="customerMobile" class="form-input"
+                            placeholder="Enter your mobile number" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="customerAddress">Delivery Address</label>
+                        <textarea id="customerAddress" class="form-input" placeholder="Enter your complete address"
+                            rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Details Summary -->
+            <div class="customer-details-summary" id="customerDetailsSummary">
+                <!-- Will be populated by JavaScript -->
+            </div>
+
+            <div class="cart-items" id="cartItems">
+                <!-- Cart items will be inserted here -->
+                <div class="cart-empty" id="cartEmpty">Your cart is empty</div>
+            </div>
+
+            <div class="cart-total">
+                <span>Total:</span>
+                <span class="total-amount" id="cartTotal">₹0</span>
+            </div>
+
+            <div class="cart-actions">
+                <button class="btn-add-another" id="addAnotherItem">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Add another Item
+                </button>
+                <button class="btn-clear" id="clearCart">Clear Cart</button>
+                <button class="btn-whatsapp" id="whatsappOrder">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                        <path
+                            d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.864 3.488" />
+                    </svg>
+                    Order via WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Menu Data
+        const data =[
+        
+{"id": 1, "cat": "Thali System", "name": "Chicken Fry Thali | चिकन फ्राय ताट", "price": "Rs. 180", "desc": "Authentic chicken fry served with soft rotis, aromatic rice, and traditional rassa gravy.", "tags": ["Non-Veg", "Thali"], "img": "img/chicken_fry_thali.jpeg"},
+{"id": 2, "cat": "Thali System", "name": "Chicken Masala Thali | चिकन मसाला ताट", "price": "Rs. 200", "desc": "Flavorful chicken masala gravy served with a complete traditional meal plate setup.", "tags": ["Non-Veg", "Thali"], "img": "img/chicken_masala_thali.jpeg"},
+{"id": 3, "cat": "Thali System", "name": "Mutton Thali | मटण ताट", "price": "Rs. 300", "desc": "Premium slow-cooked mutton dish served with traditional breads and unlimited rassa base.", "tags": ["Non-Veg", "Thali"], "img": "img/mutton_thali.jpeg"},
+{"id": 4, "cat": "Thali System", "name": "Mutton Fry Thali | मटण फ्राय ताट", "price": "Rs. 310", "desc": "Spicy pan-fried mutton pieces served as a complete comforting traditional meal plate.", "tags": ["Non-Veg", "Thali"], "img": "img/mutton_fry_thali.jpeg"},
+{"id": 5, "cat": "Thali System", "name": "Mutton Masala Thali | मटण मसाला ताट", "price": "Rs. 320", "desc": "Rich and robust mutton semi-gravy masala served traditionally along with side accompaniments.", "tags": ["Non-Veg", "Thali"], "img": "img/mutton_masala_thali.jpeg"},
+{"id": 6, "cat": "Thali System", "name": "Macchi Curry Thali | मच्छी करी ताट", "price": "Rs. 200", "desc": "Tangy and spiced regional style fish curry served complete with rice and bhakri.", "tags": ["Non-Veg", "Thali"], "img": "img/macchi_curry_thali.jpeg"},
+{"id": 7, "cat": "Thali System", "name": "Macchi Fry Thali | मच्छी फ्राय ताट", "price": "Rs. 200", "desc": "Crispy rava or masala coated fried fish served with a traditional meal combination.", "tags": ["Non-Veg", "Thali"], "img": "img/macchi_fry_thali.jpeg"},
+{"id": 8, "cat": "Thali System", "name": "Anda Masala Thali | अंडा मसाला ताट", "price": "Rs. 140", "desc": "Boiled eggs inside a flavorful semi-thick spiced gravy masala served as a full thali.", "tags": ["Non-Veg", "Thali"], "img": "img/anda_masala_thali.jpeg"},
+{"id": 9, "cat": "Thali System", "name": "Anda Masala Single | अंडा मसाला सिंगल", "price": "Rs. 120", "desc": "Single portion serving of classic spiced egg masala gravy without full thali accompaniments.", "tags": ["Non-Veg", "Dish"], "img": "img/anda_masala_single.jpeg"},
+{"id": 10, "cat": "Thali System", "name": "Andakari Thali | अंडाकरी ताट", "price": "Rs. 120", "desc": "Home-style thin egg curry gravy served along with your choice of hot Indian breads.", "tags": ["Non-Veg", "Thali"], "img": "img/andakari_thali.jpeg"},
+{"id": 11, "cat": "Thali System", "name": "Andakari Single | अंडाकरी सिंगल", "price": "Rs. 110", "desc": "A aromatic single standard bowl serving of spiced egg curry gravy option.", "tags": ["Non-Veg", "Dish"], "img": "img/andakari_single.jpeg"},
+{"id": 12, "cat": "Thali System", "name": "Chicken Kolhapuri Thali | चिकन कोल्हा. ताट", "price": "Rs. 180", "desc": "Fiery and robust chicken dish prepared inside sharp traditional Kolhapuri style spices.", "tags": ["Non-Veg", "Thali"], "img": "img/chicken_kolhapuri_thali.jpeg"},
+{"id": 13, "cat": "Thali System", "name": "Mutton Kolhapuri Thali | मटण कोल्हा. ताट", "price": "Rs. 310", "desc": "Spicy signature slow-cooked mutton dish loaded with extra hot Kolhapuri red masalas.", "tags": ["Non-Veg", "Thali"], "img": "img/mutton_kolhapuri_thali.jpeg"},
+{"id": 14, "cat": "Handi System", "name": "Mutton Handi Full | मटण हांडी बुल्ल", "price": "Rs. 1000", "desc": "Full large family portion of rich mutton curry slow-cooked inside an authentic handi pot.", "tags": ["Non-Veg", "Main Course"], "img": "img/mutton_handi_full.jpeg"},
+{"id": 15, "cat": "Handi System", "name": "Mutton Handi Half | मटण हांडी हाफ", "price": "Rs. 500", "desc": "Half portion of rich mutton curry slow-cooked inside an authentic handi pot.", "tags": ["Non-Veg", "Main Course"], "img": "img/mutton_handi_half.jpeg"},
+{"id": 16, "cat": "Handi System", "name": "Mutton Masala Handi Full | मटण मसाला हांडी", "price": "Rs. 1050", "desc": "Full handi portion of tender mutton chunks coated inside an extra thick fragrant masala base.", "tags": ["Non-Veg", "Main Course"], "img": "img/mutton_masala_handi_full.jpeg"},
+{"id": 17, "cat": "Handi System", "name": "Mutton Masala Handi Half | मटण मसाला हांडी हाफ", "price": "Rs. 550", "desc": "Half handi portion of tender mutton chunks coated inside an extra thick fragrant masala base.", "tags": ["Non-Veg", "Main Course"], "img": "img/mutton_masala_handi_half.jpeg"},
+{"id": 18, "cat": "Handi System", "name": "Chicken Handi Full | चिकन हांडी फुल", "price": "Rs. 600", "desc": "Full portion of signature house-style chicken gravy prepared traditionally in a broad handi.", "tags": ["Non-Veg", "Main Course"], "img": "img/chicken_handi_full.jpeg"},
+{"id": 19, "cat": "Handi System", "name": "Chicken Handi Half | चिकन हांडी हाफ", "price": "Rs. 350", "desc": "Half portion of signature house-style chicken gravy prepared traditionally in a broad handi.", "tags": ["Non-Veg", "Main Course"], "img": "img/chicken_handi_half.jpeg"},
+{"id": 20, "cat": "Handi System", "name": "Chicken Masala Handi | चिकन मसाला हांडी", "price": "Rs. 650", "desc": "Rich chicken masala gravy prepared inside a handi for deep absorbed slow flavors.", "tags": ["Non-Veg", "Main Course"], "img": "img/chicken_masala_handi.jpeg"},
+{"id": 21, "cat": "Handi System", "name": "Chicken Masala Handi Half | चिकन मसाला हांडी हाफ", "price": "Rs. 380", "desc": "Half portion size of rich chicken masala gravy cooked inside a traditional flavor handi.", "tags": ["Non-Veg", "Main Course"], "img": "img/chicken_masala_handi_half.jpeg"},
+{"id": 22, "cat": "Handi System", "name": "Anda Masala Plate | अंडा मसाला प्लेट", "price": "Rs. 110", "desc": "A perfect sharing plate of fried boiled eggs served inside a robust Indian spice curry.", "tags": ["Non-Veg", "Main Course"], "img": "img/anda_masala_plate.jpeg"},
+{"id": 23, "cat": "Biryani", "name": "Mutton Biryani | मटण बिर्याणी", "price": "Rs. 300", "desc": "Richly aromatic premium long-grain rice cooked delicately with slow-cooked spiced mutton chunks.", "tags": ["Non-Veg", "Biryani"], "img": "img/mutton_biryani.jpeg"},
+{"id": 24, "cat": "Biryani", "name": "Chicken Biryani | चिकन बिर्याणी", "price": "Rs. 200", "desc": "Traditional layers of fragrant basmati rice and perfectly marinated spiced chicken meat.", "tags": ["Non-Veg", "Biryani"], "img": "img/chicken_biryani.jpeg"},
+{"id": 25, "cat": "Biryani", "name": "Anda Biryani | अंडा बिर्याणी", "price": "Rs. 150", "desc": "Flavorful spiced rice dish cooked along with fried hard-boiled eggs and authentic herbs.", "tags": ["Non-Veg", "Biryani"], "img": "img/anda_biryani.jpeg"},
+{"id": 26, "cat": "Biryani", "name": "Veg Biryani | व्हेज बिर्याणी", "price": "Rs. 150", "desc": "Aromatic and classic recipe of rice layered seamlessly with fresh garden mixed vegetables.", "tags": ["Veg", "Biryani"], "img": "img/veg_biryani.jpeg"},
+{"id": 27, "cat": "Biryani", "name": "Veg Pulao | व्हेज पुलाव", "price": "Rs. 150", "desc": "Mildly spiced, fragrant and buttery rice pilaf packed with fresh green vegetables.", "tags": ["Veg", "Biryani"], "img": "img/veg_pulao.jpeg"},
+{"id": 28, "cat": "Tandoori Roti", "name": "Tandoori Roti | तंदुरी रोटी", "price": "Rs. 15", "desc": "Whole wheat rustic flatbread baked traditionally inside a piping hot clay tandoor.", "tags": ["Veg", "Roti"], "img": "img/tandoori_roti.jpeg"},
+{"id": 29, "cat": "Tandoori Roti", "name": "Butter Roti | बटर रोटी", "price": "Rs. 20", "desc": "Hot clay-oven baked tandoori roti layered generously with pure melted butter.", "tags": ["Veg", "Roti"], "img": "img/butter_roti.jpeg"},
+{"id": 30, "cat": "Tandoori Roti", "name": "Chapati | चपाती", "price": "Rs. 10", "desc": "Soft, simple homestyle flatbread rolled out and cooked evenly on a flat tawa.", "tags": ["Veg", "Roti"], "img": "img/chapati.jpeg"},
+{"id": 31, "cat": "Tandoori Roti", "name": "Bajri Bhakri | बाजरी भाकरी", "price": "Rs. 10", "desc": "Traditional thick, rustic sorghum flatbread prepared hand-patted on iron griddles.", "tags": ["Veg", "Roti"], "img": "img/bajri_bhakri.jpeg"},
+{"id": 32, "cat": "Tandoori Roti", "name": "Naan | नान", "price": "Rs. 40", "desc": "Leavened premium white flour flatbread baked soft and fluffy in the tandoor.", "tags": ["Veg", "Roti"], "img": "img/naan.jpeg"},
+{"id": 33, "cat": "Tandoori Roti", "name": "Butter Naan | बटर नान", "price": "Rs. 50", "desc": "Soft and classic leavened naan flatbread finished with a shiny coat of butter.", "tags": ["Veg", "Roti"], "img": "img/butter_naan.jpeg"},
+{"id": 34, "cat": "Tandoori Roti", "name": "Masala Roti | मसाला रोटी", "price": "Rs. 50", "desc": "Tandoori roti spiked up and seasoned with red chilli powders and aromatic dry masalas.", "tags": ["Veg", "Roti"], "img": "img/masala_roti.jpeg"},
+{"id": 35, "cat": "Rice", "name": "Sada Rice Full | साषा राईस बुल्ल", "price": "Rs. 70", "desc": "Full portion of simple steamed white premium long-grain rice.", "tags": ["Veg", "Rice"], "img": "img/sada_rice_full.jpeg"},
+{"id": 36, "cat": "Rice", "name": "Sada Rice Half | साषा राईस हाफ", "price": "Rs. 40", "desc": "Half portion of simple steamed white premium long-grain rice.", "tags": ["Veg", "Rice"], "img": "img/sada_rice_half.jpeg"},
+{"id": 37, "cat": "Rice", "name": "Jeera Rice Full | जिरा राईस फुल्ल", "price": "Rs. 80", "desc": "Full portion of aromatic basmati rice fried gently with ghee and whole cumin seeds.", "tags": ["Veg", "Rice"], "img": "img/jeera_rice_full.jpeg"},
+{"id": 38, "cat": "Rice", "name": "Jeera Rice Half | जिरा राईस हाफ", "price": "Rs. 50", "desc": "Half portion of aromatic basmati rice fried gently with ghee and whole cumin seeds.", "tags": ["Veg", "Rice"], "img": "img/jeera_rice_half.jpeg"},
+{"id": 39, "cat": "Rice", "name": "Anda Rice | अंडा राईस", "price": "Rs. 150", "desc": "Flavorful quick-tossed rice stir-fried cleanly with scrambled egg shreds and light soy spice.", "tags": ["Non-Veg", "Rice"], "img": "img/anda_rice.jpeg"},
+{"id": 40, "cat": "Rice", "name": "Dal Khichdi | डाल खिचडी", "price": "Rs. 150", "desc": "Comforting, wholesome and healthy traditional mushy preparation of yellow lentils and rice.", "tags": ["Veg", "Rice"], "img": "img/dal_khichdi.jpeg"},
+{"id": 41, "cat": "Rice", "name": "Masala Rice | मसाला राईस", "price": "Rs. 150", "desc": "Spicy stir-fried hot long-grain rice tossed along with aromatic local ground masalas.", "tags": ["Veg", "Rice"], "img": "img/masala_rice.jpeg"},
+{"id": 42, "cat": "Rice", "name": "Biryani Rice | बिर्याणी राईस", "price": "Rs. 150", "desc": "Aromatic, flavored long-grain basmati rice harvested directly from rich biryani gravy batches.", "tags": ["Veg", "Rice"], "img": "img/biryani_rice.jpeg"},
+{"id": 43, "cat": "Snacks & Starters", "name": "Roasted Papad | रोस्टेड पापड", "price": "Rs. 20", "desc": "Crispy traditional dry-roasted lentil cracker flatbread.", "tags": ["Veg", "Snacks"], "img": "img/roasted_papad.jpeg"},
+{"id": 44, "cat": "Snacks & Starters", "name": "Masala Papad | मसाला पापड", "price": "Rs. 40", "desc": "Crunchy roasted papad topped fresh with chopped onions, juicy tomatoes, and chaat spices.", "tags": ["Veg", "Snacks"], "img": "img/masala_papad.jpeg"},
+{"id": 45, "cat": "Snacks & Starters", "name": "Egg Bhurji | अंडा भुर्जी", "price": "Rs. 80", "desc": "Quick scrambled eggs cooked thoroughly on flat pan with onions, chillies, and green herbs.", "tags": ["Non-Veg", "Snacks"], "img": "img/egg_bhurji.jpeg"},
+{"id": 46, "cat": "Snacks & Starters", "name": "Egg Omelette | अंडा ऑम्लेट", "price": "Rs. 70", "desc": "Pan-fried whisked beaten eggs loaded cleanly with fresh onions and basic spice seasoning.", "tags": ["Non-Veg", "Snacks"], "img": "img/egg_omelette.jpeg"},
+{"id": 47, "cat": "Snacks & Starters", "name": "Egg Boil | अंडा बॉईल", "price": "Rs. 15", "desc": "Simple, nutritious single hard-boiled egg server.", "tags": ["Non-Veg", "Snacks"], "img": "img/egg_boil.jpeg"},
+{"id": 48, "cat": "Snacks & Starters", "name": "Egg Boil Plate | अंडा बॉईल प्लेट", "price": "Rs. 30", "desc": "Plate of sliced hard-boiled eggs seasoned perfectly with red chilli powder and salt.", "tags": ["Non-Veg", "Snacks"], "img": "img/egg_boil_plate.jpeg"},
+{"id": 49, "cat": "Snacks & Starters", "name": "Chicken Plate | चिकन प्लेट", "price": "Rs. 130", "desc": "Standard single serving plate portion of house special non-veg chicken appetizer.", "tags": ["Non-Veg", "Snacks"], "img": "img/chicken_plate.jpeg"},
+{"id": 50, "cat": "Snacks & Starters", "name": "Chicken Fry | चिकन फ्राय", "price": "Rs. 140", "desc": "Crispy seasoned deep-fried dry chicken appetizer bites.", "tags": ["Non-Veg", "Snacks"], "img": "img/chicken_fry_dry.jpeg"},
+{"id": 51, "cat": "Snacks & Starters", "name": "Chicken Dry | चिकन ड्राय", "price": "Rs. 140", "desc": "Wok-tossed pan-seared chicken pieces glazed nicely inside thick aromatic dry masalas.", "tags": ["Non-Veg", "Snacks"], "img": "img/chicken_dry.jpeg"},
+{"id": 52, "cat": "Snacks & Starters", "name": "Mutton Plate | मटण प्लेट", "price": "Rs. 200", "desc": "Standard size starter plate portion of slow-cooked rustic meat pieces.", "tags": ["Non-Veg", "Snacks"], "img": "img/mutton_plate.jpeg"},
+{"id": 53, "cat": "Snacks & Starters", "name": "Mutton Fry | मटण फ्राय", "price": "Rs. 210", "desc": "Tender pieces of mutton fried beautifully on pan with heavy dry spice grounds.", "tags": ["Non-Veg", "Snacks"], "img": "img/mutton_fry_dry.jpeg"},
+{"id": 54, "cat": "Snacks & Starters", "name": "Mutton Dry | मटण ड्राय", "price": "Rs. 220", "desc": "Thickly coated pan-roasted mutton starter tossed dry with local black pepper masalas.", "tags": ["Non-Veg", "Snacks"], "img": "img/mutton_dry.jpeg"},
+{"id": 55, "cat": "Snacks & Starters", "name": "Anda Fry | अंडा फ्राय", "price": "Rs. 70", "desc": "Pan-fried shallow hard boiled egg halves with sharp crisp edges and spicy seasoning.", "tags": ["Non-Veg", "Snacks"], "img": "img/egg_fry_starter.jpeg"},
+{"id": 56, "cat": "Snacks & Starters", "name": "Matki Fry | मटकी फ्राय", "price": "Rs. 90", "desc": "Spiced stir-fried moth bean sprouts cooked homestyle with onions and green chillies.", "tags": ["Veg", "Snacks"], "img": "img/matki_fry.jpeg"},
+{"id": 57, "cat": "Snacks & Starters", "name": "Girvi Vati | गिरवी वाटी", "price": "Rs. 20", "desc": "A small extra bowl serving of thick signature base gravy sauce.", "tags": ["Non-Veg", "Side"], "img": "img/girvi_vati.jpeg"},
+{"id": 58, "cat": "Snacks & Starters", "name": "Rassa Vati | रसा वाटी", "price": "Rs. 15", "desc": "Extra side cup serving of the spicy, thin traditional running gravy broth.", "tags": ["Non-Veg", "Side"], "img": "img/rassa_vati.jpeg"},
+{"id": 59, "cat": "Snacks & Starters", "name": "Rassa Handi Full | रसा हांडी फुल्ल", "price": "Rs. 100", "desc": "A large full sharing handi pot filled with piping hot traditional spicy thin gravy rassa.", "tags": ["Non-Veg", "Side"], "img": "img/rassa_handi_full.jpeg"},
+{"id": 60, "cat": "Snacks & Starters", "name": "Rassa Handi Half | रसा हांडी हाफ", "price": "Rs. 70", "desc": "A medium sharing handi pot filled with piping hot traditional spicy thin gravy rassa.", "tags": ["Non-Veg", "Side"], "img": "img/rassa_handi_half.jpeg"},
+{"id": 61, "cat": "Snacks & Starters", "name": "Tomato Salad | टामॅटो सलाड", "price": "Rs. 20", "desc": "Fresh thinly sliced raw salad tomatoes topped with lime juice and fresh pinch of salt.", "tags": ["Veg", "Snacks"], "img": "img/tomato_salad.jpeg"},
+{"id": 62, "cat": "Snacks & Starters", "name": "Macchi Fry Plate | मच्छी फ्राय प्लेट", "price": "Rs. 150", "desc": "Masala crisp golden-fried fish steaks served up as a hot starter option.", "tags": ["Non-Veg", "Snacks"], "img": "img/macchi_fry_plate.jpeg"},
+{"id": 63, "cat": "Veg Bhaji Plate", "name": "Kaju Masala Plate | काजू मसाला प्लेट", "price": "Rs. 180", "desc": "Rich and premium gravy cooked with fried cashew nuts in a creamy onion tomato base.", "tags": ["Veg", "Main Course"], "img": "img/kaju_masala_plate.jpeg"},
+{"id": 64, "cat": "Veg Bhaji Plate", "name": "Kaju Curry | काजू करी", "price": "Rs. 180", "desc": "Roasted cashew nuts cooked elegantly inside a smooth creamy yellow gravy base.", "tags": ["Veg", "Main Course"], "img": "img/kaju_curry.jpeg"},
+{"id": 65, "cat": "Veg Bhaji Plate", "name": "Paneer Masala | पनीर मसाला", "price": "Rs. 140", "desc": "Soft fresh cottage cheese cubes cooked inside a rich aromatic medium-spiced Indian gravy.", "tags": ["Veg", "Main Course"], "img": "img/paneer_masala.jpeg"},
+{"id": 66, "cat": "Veg Bhaji Plate", "name": "Dal Fry | डाल फ्राय", "price": "Rs. 110", "desc": "Yellow lentils cooked thoroughly and tempered cleanly with onions, tomatoes, and garlic ghee.", "tags": ["Veg", "Main Course"], "img": "img/dal_fry.jpeg"},
+{"id": 67, "cat": "Veg Bhaji Plate", "name": "Dal Tadka | डाल तडका", "price": "Rs. 120", "desc": "Smooth lentils finished beautifully with a crackling smoky top temper of red chillies and cumin.", "tags": ["Veg", "Main Course"], "img": "img/dal_tadka.jpeg"},
+{"id": 68, "cat": "Veg Bhaji Plate", "name": "Shev Bhaji | शेव भाजी", "price": "Rs. 120", "desc": "Famous spicy and fiery local thin gravy served up topped with crunchy gram-flour sev.", "tags": ["Veg", "Main Course"], "img": "img/shev_bhaji.jpeg"},
+{"id": 69, "cat": "Veg Bhaji Plate", "name": "Shev Bhaji Special | शेव भाजी - स्पेशल", "price": "Rs. 110", "desc": "Chef special extra rich gravy base combined seamlessly with crunchy crisp long sev.", "tags": ["Veg", "Main Course"], "img": "img/shev_bhaji_special.jpeg"},
+{"id": 70, "cat": "Veg Bhaji Plate", "name": "Akka Masoor | अक्का मसुुर", "price": "Rs. 110", "desc": "Rustic Dhaba style rich curry prepared with whole black lentils and aromatic ground spices.", "tags": ["Veg", "Main Course"], "img": "img/akka_masoor.jpeg"},
+{"id": 71, "cat": "Veg Bhaji Plate", "name": "Baingan Masala | बैंगन मसाला", "price": "Rs. 120", "desc": "Tender pan-roasted eggplants stuffed and simmered deeply inside a spiced peanut masala base.", "tags": ["Veg", "Main Course"], "img": "img/baingan_masala.jpeg"},
+{"id": 72, "cat": "Veg Bhaji Plate", "name": "Matki Masala | मटकी मसाला", "price": "Rs. 110", "desc": "Savory sprout moth bean curry cooked inside traditional semi-dry onion masala gravy.", "tags": ["Veg", "Main Course"], "img": "img/matki_masala.jpeg"},
+{"id": 73, "cat": "Veg Bhaji Plate", "name": "Kaju Paneer Mix | काजू पनीर मिक्स", "price": "Rs. 200", "desc": "A luxurious rich combination recipe of soft cottage cheese and whole roasted cashews in a grand gravy.", "tags": ["Veg", "Main Course"], "img": "img/kaju_paneer_mix.jpeg"},
+{"id": 74, "cat": "Veg Bhaji Plate", "name": "Paneer Palakwali | पनीर पालकवली", "price": "Rs. 140", "desc": "Fresh smooth paneer chunks drenched beautifully inside a bright green velvety spinach cream puree.", "tags": ["Veg", "Main Course"], "img": "img/paneer_palakwali.jpeg"},
+{"id": 75, "cat": "Veg Bhaji Plate", "name": "Paneer Tikka | पनीर टीक्का", "price": "Rs. 170", "desc": "Marinated spicy cottage cheese chunks charred in clay oven and served inside thick red gravy.", "tags": ["Veg", "Main Course"], "img": "img/paneer_tikka_bhaji.jpeg"},
+{"id": 76, "cat": "Veg Bhaji Plate", "name": "Matki Fry | मटकी फाय", "price": "Rs. 90", "desc": "Homestyle quick dry tossed stir-fried moth bean sprouts with simple spices.", "tags": ["Veg", "Main Course"], "img": "img/matki_fry_bhaji.jpeg"},
+{"id": 77, "cat": "Veg Bhaji Plate", "name": "Aloo Matar | आलू मटर", "price": "Rs. 110", "desc": "Comforting homestyle recipe combining soft potato cubes and green peas in a light tomato curry.", "tags": ["Veg", "Main Course"], "img": "img/aloo_matar.jpeg"},
+{"id": 78, "cat": "Veg Bhaji Plate", "name": "Green Peas | ग्रीन पीस", "price": "Rs. 110", "desc": "Tender garden fresh sweet green peas simmered completely inside a spiced semi-dry Indian masala.", "tags": ["Veg", "Main Course"], "img": "img/green_peas.jpeg"},
+{"id": 79, "cat": "Veg Bhaji Plate", "name": "Mix Veg | मिक्स व्हेज", "price": "Rs. 160", "desc": "Wholesome and healthy compilation of choice seasonal vegetables cooked in an authentic semi-gravy.", "tags": ["Veg", "Main Course"], "img": "img/mix_veg.jpeg"},
+{"id": 80, "cat": "Veg Bhaji Plate", "name": "Jira Dal | जिरा डाल", "price": "Rs. 120", "desc": "Simple comforting clean yellow lentil soup tempered heavily with golden roasted cumin seeds.", "tags": ["Veg", "Main Course"], "img": "img/jira_dal.jpeg"},
+{"id": 81, "cat": "Veg Bhaji Plate", "name": "Veg Kolhapuri | व्हेज कोल्हापूरी", "price": "Rs. 170", "desc": "Fiery spicy mixed vegetable preparation crafted explicitly using pungent Kolhapuri ground spice blends.", "tags": ["Veg", "Main Course"], "img": "img/veg_kolhapuri.jpeg"},
+
+
+{"id": 82, "cat": "Liquor Brands", "name": "8 Pm 180", "price": "Rs. 180", "desc": "Classic 8 PM blended whiskey single 180ml measure pack.", "tags": ["Liquor", "Whisky"], "img": "img/8_pm_180.jpeg"},
+{"id": 83, "cat": "Liquor Brands", "name": "BP 180", "price": "Rs. 180", "desc": "Blenders Pride premium blended whisky 180ml pack.", "tags": ["Liquor", "Whisky"], "img": "img/bp_180.jpeg"},
+{"id": 84, "cat": "Liquor Brands", "name": "Goa Gin 180", "price": "Rs. 180", "desc": "Refreshing dry gin aromatic spirit single 180ml bottle.", "tags": ["Liquor", "Gin"], "img": "img/goa_gin_180.jpeg"},
+{"id": 85, "cat": "Liquor Brands", "name": "Brandy 180", "price": "Rs. 240", "desc": "Premium aged grape brandy smooth blend 180ml serve.", "tags": ["Liquor", "Brandy"], "img": "img/brandy_180.jpeg"},
+{"id": 86, "cat": "Liquor Brands", "name": "DSP Black 750", "price": "Rs. 750", "desc": "Director's Special Black exquisite blended whisky full 750ml bottle.", "tags": ["Liquor", "Whisky"], "img": "img/dsp_black_750.jpeg"},
+{"id": 87, "cat": "Liquor Brands", "name": "DSP Black 180", "price": "Rs. 180", "desc": "Director's Special Black blended select whisky 180ml pocket size pack.", "tags": ["Liquor", "Whisky"], "img": "img/dsp_black_180.jpeg"},
+{"id": 88, "cat": "Liquor Brands", "name": "DSP Plane 180 Magic Premium", "price": "Rs. 260", "desc": "Director's Special plain blended smooth whisky 180ml measure.", "tags": ["Liquor", "Whisky"], "img": "img/dsp_plane_180.jpeg"},
+{"id": 89, "cat": "Liquor Brands", "name": "Haywords. w 180 Roxy Slim", "price": "Rs. 320", "desc": "Haywards fine blended standard heritage whisky 180ml serve pack.", "tags": ["Liquor", "Whisky"], "img": "img/haywords_w_180.jpeg"},
+{"id": 90, "cat": "Liquor Brands", "name": "Haywords. VD 180 Pink", "price": "Rs. 180", "desc": "Haywards variant special collection aromatic blend 180ml bottle.", "tags": ["Liquor", "Whisky"], "img": "img/haywords_vd_180.jpeg"},
+{"id": 91, "cat": "Liquor Brands", "name": "Msgic P 180", "price": "Rs. 180", "desc": "Magic Moments pure grain premium distilled vodka 180ml base pack.", "tags": ["Liquor", "Vodka"], "img": "img/msgic_p_180.jpeg"},
+{"id": 92, "cat": "Liquor Brands", "name": "Magic. Orange 180", "price": "Rs. 320", "desc": "Magic Moments citrus orange flavored triple distilled vodka 180ml pack.", "tags": ["Liquor", "Vodka"], "img": "img/magic_orange_180.jpeg"},
+{"id": 93, "cat": "Liquor Brands", "name": "Magic Apple 180", "price": "Rs. 180", "desc": "Magic Moments crisp green apple flavored refreshing vodka 180ml bottle.", "tags": ["Liquor", "Vodka"], "img": "img/magic_apple_180.jpeg"},
+{"id": 94, "cat": "Liquor Brands", "name": "MC Rum 750 Pi-82", "price": "Rs. 750", "desc": "McDowell's No.1 Celebration dark rich rum large 750ml bottle.", "tags": ["Liquor", "Rum"], "img": "img/mc_rum_750.jpeg"},
+{"id": 95, "cat": "Liquor Brands", "name": "MC Rum 180", "price": "Rs. 260", "desc": "McDowell's No.1 Celebration traditional dark rum 180ml pack size.", "tags": ["Liquor", "Rum"], "img": "img/mc_rum_180.jpeg"},
+{"id": 96, "cat": "Liquor Brands", "name": "MC Whisky 750", "price": "Rs. 750", "desc": "McDowell's No.1 luxury reserve blended Indian whisky full 750ml size.", "tags": ["Liquor", "Whisky"], "img": "img/mc_whisky_750.jpeg"},
+{"id": 97, "cat": "Liquor Brands", "name": "MC Whisky 375 Black Dog", "price": "Rs. 375", "desc": "McDowell's No.1 select smooth blended reserve whisky medium 375ml bottle.", "tags": ["Liquor", "Whisky"], "img": "img/mc_whisky_375.jpeg"},
+{"id": 98, "cat": "Liquor Brands", "name": "MC Whisky 180", "price": "Rs. 260", "desc": "McDowell's No.1 signature reserve blended whisky popular 180ml size.", "tags": ["Liquor", "Whisky"], "img": "img/mc_whisky_180.jpeg"},
+{"id": 99, "cat": "Liquor Brands", "name": "MC Platinum 180 Gold Classic", "price": "Rs. 200", "desc": "McDowell's No.1 Platinum premium refined grain smooth whisky 180ml pack.", "tags": ["Liquor", "Whisky"], "img": "img/mc_platinum_180.jpeg"},
+{"id": 100, "cat": "Liquor Brands", "name": "MC Luxray 180", "price": "Rs. 280", "desc": "McDowell's premium luxury line character blended spirit 180ml bottle.", "tags": ["Liquor", "Whisky"], "img": "img/mc_luxray_180.jpeg"},
+{"id": 101, "cat": "Liquor Brands", "name": "Singanture 180", "price": "Rs. 180", "desc": "Signature rare aged rich premium grain blended whisky 180ml pack.", "tags": ["Liquor", "Whisky"], "img": "img/singanture_180.jpeg"},
+{"id": 102, "cat": "Liquor Brands", "name": "OC Star 180 MD", "price": "Rs. 200", "desc": "Officer's Choice Blue fine grain crisp blended whisky 180ml serve.", "tags": ["Liquor", "Whisky"], "img": "img/oc_star_180.jpeg"},
+{"id": 103, "cat": "Liquor Brands", "name": "OC Blue 180", "price": "Rs. 180", "desc": "Officer's Choice Blue classic smooth premium Indian whisky 180ml size.", "tags": ["Liquor", "Whisky"], "img": "img/oc_blue_180.jpeg"},
+{"id": 104, "cat": "Liquor Brands", "name": "OC Whisky 750 Amber", "price": "Rs. 200", "desc": "Officer's Choice classic standard smooth blend whisky 750ml large model.", "tags": ["Liquor", "Whisky"], "img": "img/oc_whisky_750.jpeg"},
+{"id": 105, "cat": "Liquor Brands", "name": "OC Whisky 180", "price": "Rs. 260", "desc": "Officer's Choice mass favorite choice blended grain whisky 180ml bottle.", "tags": ["Liquor", "Whisky"], "img": "img/oc_whisky_180.jpeg"},
+{"id": 106, "cat": "Liquor Brands", "name": "OC Whisky 90 Amber", "price": "Rs. 110", "desc": "Officer's Choice reserve blend choice pocket single quarter 90ml measure.", "tags": ["Liquor", "Whisky"], "img": "img/oc_whisky_90.jpeg"},
+{"id": 107, "cat": "Liquor Brands", "name": "Old Munk 180", "price": "Rs. 250", "desc": "Old Monk legendary vatted dark rum aged nicely 180ml standard bottle.", "tags": ["Liquor", "Rum"], "img": "img/old_munk_180.jpeg"},
+{"id": 108, "cat": "Liquor Brands", "name": "Romonao. V 180", "price": "Rs. 260", "desc": "Romanov premium triple distilled crystal clean vodka 180ml serving.", "tags": ["Liquor", "Vodka"], "img": "img/romonao_v_180.jpeg"},
+{"id": 109, "cat": "Liquor Brands", "name": "Romonao Apple", "price": "Rs. 180", "desc": "Romanov crisp orchard apple flavored infused vodka 180ml bottle.", "tags": ["Liquor", "Vodka"], "img": "img/romonao_apple.jpeg"},
+{"id": 110, "cat": "Liquor Brands", "name": "RC 180", "price": "Rs. 320", "desc": "Royal Challenge exquisite deep premium aged grain blend whisky 180ml size.", "tags": ["Liquor", "Whisky"], "img": "img/rc_180.jpeg"},
+{"id": 111, "cat": "Liquor Brands", "name": "JB 180 Alpha-Bull", "price": "Rs. 200", "desc": "J&B rare blended fine scotch heritage character whisky 180ml pack.", "tags": ["Liquor", "Whisky"], "img": "img/jb_180.jpeg"},
+{"id": 112, "cat": "Liquor Brands", "name": "IB 750", "price": "Rs. 750", "desc": "Imperial Blue fine grain sweet character blended whisky 750ml large.", "tags": ["Liquor", "Whisky"], "img": "img/ib_750.jpeg"},
+{"id": 113, "cat": "Liquor Brands", "name": "IB 375", "price": "Rs. 375", "desc": "Imperial Blue smooth premium grain blend whisky 375ml medium bottle.", "tags": ["Liquor", "Whisky"], "img": "img/ib_375.jpeg"},
+{"id": 114, "cat": "Liquor Brands", "name": "IB 180", "price": "Rs. 260", "desc": "Imperial Blue crisp select blended grain fine whisky 180ml pocket pack.", "tags": ["Liquor", "Whisky"], "img": "img/ib_180.jpeg"},
+{"id": 115, "cat": "Liquor Brands", "name": "MB Whisky 180", "price": "Rs. 180", "desc": "Premium house selection blended grain aromatic whisky 180ml serve.", "tags": ["Liquor", "Whisky"], "img": "img/mb_whisky_180.jpeg"},
+{"id": 116, "cat": "Liquor Brands", "name": "B. Fried 750", "price": "Rs. 750", "desc": "Premium selected traditional clear spirit distillery choice 750ml full.", "tags": ["Liquor", "Whisky"], "img": "img/b_fried_750.jpeg"},
+{"id": 117, "cat": "Liquor Brands", "name": "B. Fried 180", "price": "Rs. 180", "desc": "Standard signature crisp blended rich spirit 180ml travel size pack.", "tags": ["Liquor", "Whisky"], "img": "img/b_fried_180.jpeg"},
+{"id": 118, "cat": "Liquor Brands", "name": "B. Fried 90 375m", "price": "Rs. 90", "desc": "Compact single treat serving size premium blend spirit 90ml option.", "tags": ["Liquor", "Whisky"], "img": "img/b_fried_90.jpeg"},
+{"id": 119, "cat": "Liquor Brands", "name": "Royal Stag 750", "price": "Rs. 750", "desc": "Royal Stag deluxe fine pre-blended seagram grain whisky full 750ml.", "tags": ["Liquor", "Whisky"], "img": "img/royal_stag_750.jpeg"},
+{"id": 120, "cat": "Liquor Brands", "name": "Royal Stag 180", "price": "Rs. 300", "desc": "Royal Stag classic deluxe smooth blended grain premium whisky 180ml.", "tags": ["Liquor", "Whisky"], "img": "img/royal_stag_180.jpeg"},
+{"id": 121, "cat": "Liquor Brands", "name": "WTM. G. Vodka 180 Gold", "price": "Rs. 180", "desc": "White Mischief smooth crystal ultra refined clear vodka 180ml serving.", "tags": ["Liquor", "Vodka"], "img": "img/wtm_g_vodka_180.jpeg"},
+{"id": 122, "cat": "Liquor Brands", "name": "WTM. P. Vodka 180", "price": "Rs. 180", "desc": "White Mischief crisp classic line grain neutral vodka spirit 180ml pack.", "tags": ["Liquor", "Vodka"], "img": "img/wtm_p_vodka_180.jpeg"},
+{"id": 123, "cat": "Liquor Brands", "name": "Jamboo W 180", "price": "Rs. 180", "desc": "Regional special character distilled unique local blended spirit 180ml.", "tags": ["Liquor", "Whisky"], "img": "img/jamboo_w_180.jpeg"},
+{"id": 124, "cat": "Liquor Brands", "name": "Gogo & Real W 180", "price": "Rs. 380", "desc": "Special rich double blend fusion dynamic aromatic spirit 180ml serve.", "tags": ["Liquor", "Whisky"], "img": "img/gogo_real_w_180.jpeg"},
+{"id": 125, "cat": "Liquor Brands", "name": "Marno Rum 180", "price": "Rs. 180", "desc": "Traditional dark spiced aromatic sugarcane base spirit rum 180ml pack.", "tags": ["Liquor", "Rum"], "img": "img/marno_rum_180.jpeg"},
+{"id": 126, "cat": "Liquor Brands", "name": "Sun Tager Wine 180", "price": "Rs. 180", "desc": "Sweet regional single portion fermented fine red table wine 180ml.", "tags": ["Liquor", "Wine"], "img": "img/sun_tager_wine_180.jpeg"},
+{"id": 127, "cat": "Liquor Brands", "name": "Ria Strong 375 Red Mon", "price": "Rs. 375", "desc": "Rich full bodied strong character premium blended red wine 375ml size.", "tags": ["Liquor", "Wine"], "img": "img/ria_strong_375.jpeg"},
+{"id": 128, "cat": "Liquor Brands", "name": "Sidus Wine 375", "price": "Rs. 375", "desc": "Sula Sidus classic premium vintage choice blended red wine 375ml bottle.", "tags": ["Liquor", "Wine"], "img": "img/sidus_wine_375.jpeg"},
+{"id": 129, "cat": "Liquor Brands", "name": "Delta Vodka 180", "price": "Rs. 180", "desc": "Delta pure standard quadruple filtered clean grain vodka 180ml pack.", "tags": ["Liquor", "Vodka"], "img": "img/delta_vodka_180.jpeg"},
+
+
+
+{"id": 130, "cat": "Liquor Brands", "name": "Delta Whisky 180", "price": "", "desc": "Delta standard blended grain whisky 180ml single pocket pack.", "tags": ["Liquor", "Whisky"], "img": "img/delta_whisky_180.jpeg"},
+{"id": 131, "cat": "Liquor Brands", "name": "Delta Rum 180", "price": "", "desc": "Delta traditional dark rum sugarcane distilled spirit 180ml.", "tags": ["Liquor", "Rum"], "img": "img/delta_rum_180.jpeg"},
+{"id": 132, "cat": "Liquor Brands", "name": "100 Pepars 180", "price": "", "desc": "100 Pipers exquisite blended scotch whisky 180ml choice selection.", "tags": ["Liquor", "Whisky"], "img": "img/100_pepars_180.jpeg"},
+{"id": 133, "cat": "Liquor Brands", "name": "GR Mango V. 180", "price": "", "desc": "Flavored refreshing mango vodka aromatic spirit distilled 180ml pack.", "tags": ["Liquor", "Vodka"], "img": "img/gr_mango_180.jpeg"},
+{"id": 134, "cat": "Liquor Brands", "name": "Smirnoff 180", "price": "", "desc": "Smirnoff triple distilled classic crystal clean vodka 180ml pack.", "tags": ["Liquor", "Vodka"], "img": "img/smirnoff_180.jpeg"},
+{"id": 135, "cat": "Liquor Brands", "name": "Teachers W. 180", "price": "", "desc": "Teacher's Highland Cream blended scotch rich whisky 180ml bottle.", "tags": ["Liquor", "Whisky"], "img": "img/teachers_w_180.jpeg"},
+{"id": 136, "cat": "Liquor Brands", "name": "OAKTAN W. 180", "price": "", "desc": "Oakteri premium oak-aged character rich blend whisky 180ml pack.", "tags": ["Liquor", "Whisky"], "img": "img/oaktan_w_180.jpeg"},
+{"id": 137, "cat": "Liquor Brands", "name": "Red Box Rum 180", "price": "", "desc": "Red Box aromatic vatted dark rum standard choice 180ml version.", "tags": ["Liquor", "Rum"], "img": "img/red_box_rum_180.jpeg"},
+{"id": 138, "cat": "Liquor Brands", "name": "Kalnov Mango v. 180", "price": "", "desc": "Kalanov premium triple distilled mango infused vodka 180ml bottle.", "tags": ["Liquor", "Vodka"], "img": "img/kalnov_mango_180.jpeg"},
+{"id": 139, "cat": "Liquor Brands", "name": "Snow Box W. 180", "price": "", "desc": "Snow Box smooth character crystal neutral vodka spirit 180ml serve.", "tags": ["Liquor", "Vodka"], "img": "img/snow_box_180.jpeg"},
+{"id": 140, "cat": "Liquor Brands", "name": "Godwin 180", "price": "", "desc": "Godwin rich grain masterfully blended premium Indian whisky 180ml.", "tags": ["Liquor", "Whisky"], "img": "img/godwin_180.jpeg"},
+{"id": 141, "cat": "Liquor Brands", "name": "Black Dog 180", "price": "", "desc": "Black Dog premium aged finest scotch blended whisky quarter 180ml.", "tags": ["Liquor", "Whisky"], "img": "img/black_dog_180.jpeg"},
+{"id": 142, "cat": "Liquor Brands", "name": "Bulet W. 180", "price": "", "desc": "Bulleit select high-rye distinct character smooth bourbon whisky 180ml.", "tags": ["Liquor", "Whisky"], "img": "img/bulet_w_180.jpeg"},
+{"id": 143, "cat": "Liquor Brands", "name": "Aenty Guty W. 180", "price": "", "desc": "Auntie Guty custom blended heritage grain choice spirit 180ml pack.", "tags": ["Liquor", "Whisky"], "img": "img/aenty_guty_180.jpeg"},
+{"id": 144, "cat": "Beer Brands", "name": "KF Strong 650", "price": "Rs. 240", "desc": "Kingfisher Strong refreshing premium crisp lager beer sharing 650ml.", "tags": ["Liquor", "Beer"], "img": "img/kf_strong_650.jpeg"},
+{"id": 145, "cat": "Beer Brands", "name": "KF Strong 325", "price": "Rs. 200", "desc": "Kingfisher Strong premium iconic crisp lager beer single 325ml pint.", "tags": ["Liquor", "Beer"], "img": "img/kf_strong_325.jpeg"},
+{"id": 146, "cat": "Beer Brands", "name": "Tuborg 650", "price": "Rs. 240", "desc": "Tuborg Green crisp signature refreshing lager beer large 650ml bottle.", "tags": ["Liquor", "Beer"], "img": "img/tuborg_650.jpeg"},
+{"id": 147, "cat": "Beer Brands", "name": "Tuborg Classic 650", "price": "", "desc": "Tuborg Classic premium strong rich scotch-malted lager beer 650ml.", "tags": ["Liquor", "Beer"], "img": "img/tuborg_classic_650.jpeg"},
+{"id": 148, "cat": "Beer Brands", "name": "Knock Out 650", "price": "Rs. 160", "desc": "Knock Out high-strength extra powerful crisp gold lager beer 650ml.", "tags": ["Liquor", "Beer"], "img": "img/knock_out_650.jpeg"},
+{"id": 149, "cat": "Beer Brands", "name": "Knock Out 330", "price": "Rs. 240", "desc": "Knock Out strong carbonated bold refreshing lager beer single 330ml pint.", "tags": ["Liquor", "Beer"], "img": "img/knock_out_330.jpeg"},
+{"id": 150, "cat": "Beer Brands", "name": "Bud. Magnum 650", "price": "Rs. 300", "desc": "Budweiser Magnum super premium high strength crisp brewed beer full 650ml.", "tags": ["Liquor", "Beer"], "img": "img/bud_magnum_650.jpeg"},
+{"id": 151, "cat": "Beer Brands", "name": "Bud. Premium 650", "price": "", "desc": "Budweiser Premium smooth king of beers crafted american lager full 650ml.", "tags": ["Liquor", "Beer"], "img": "img/bud_premium_650.jpeg"},
+{"id": 152, "cat": "Beer Brands", "name": "Clasuburg 650", "price": "", "desc": "Carlsberg smooth premium danish pilsner refreshing lager beer full 650ml.", "tags": ["Liquor", "Beer"], "img": "img/clasuburg_650.jpeg"},
+{"id": 153, "cat": "Beer Brands", "name": "Clasuburg Smooth 650", "price": "Rs. 70", "desc": "Carlsberg Smooth premium exquisite refreshing light crisp lager beer 650ml.", "tags": ["Liquor", "Beer"], "img": "img/clasuburg_smooth_650.jpeg"},
+{"id": 154, "cat": "Beer Brands", "name": "KF Strong 650 Caliber", "price": "", "desc": "Kingfisher Blue Caliber premium full-bodied strong draft beer full 650ml.", "tags": ["Liquor", "Beer"], "img": "img/kf_strong_caliber_650.jpeg"},
+{"id": 155, "cat": "Beer Brands", "name": "Beck Ice 650 Heiniken", "price": "", "desc": "Becks Ice super crisp refreshing pure german standard lager beer full 650ml.", "tags": ["Liquor", "Beer"], "img": "img/beck_ice_650.jpeg"},
+{"id": 156, "cat": "Beer Brands", "name": "Amstel 650", "price": "", "desc": "Amstel Bier classic pure slow-brewed golden smooth lager beer full 650ml.", "tags": ["Liquor", "Beer"], "img": "img/amstel_650.jpeg"},
+{"id": 157, "cat": "Beer Brands", "name": "Amstel 500", "price": "", "desc": "Amstel Bier classic crisp refreshing slow-brewed lager beer medium 500ml.", "tags": ["Liquor", "Beer"], "img": "img/amstel_500.jpeg"},
+{"id": 158, "cat": "Beer Brands", "name": "Red Bull Monster", "price": "Rs. 130", "desc": "Premium carbonated energy drink boost serve canned pack.", "tags": ["Liquor", "Energy Drink"], "img": "img/red_bull_monster.jpeg"},
+{"id": 159, "cat": "Beer Brands", "name": "BRZEER 275 Cols", "price": "", "desc": "Bacardi Breezer premium tropical fruit flavored rum refresher single 275ml.", "tags": ["Liquor", "Breezer"], "img": "img/breezer_275.jpeg"},          
+
+
+
+        
+        
+        ];
+        // Cart functionality
+        let cart = [];
+        let deliveryType = 'restaurant'; // Default to restaurant
+        let currentSection = 'food'; // Track current section (food or liquor)
+        
+        const cartButton = document.getElementById('cartButton');
+        const cartModal = document.getElementById('cartModal');
+        const closeCart = document.getElementById('closeCart');
+        const cartItems = document.getElementById('cartItems');
+        const cartEmpty = document.getElementById('cartEmpty');
+        const cartCount = document.getElementById('cartCount');
+        const cartTotal = document.getElementById('cartTotal');
+        const clearCart = document.getElementById('clearCart');
+        const whatsappOrder = document.getElementById('whatsappOrder');
+        const addAnotherItem = document.getElementById('addAnotherItem');
+        const customerDetailsSummary = document.getElementById('customerDetailsSummary');
+        const mainMenu = document.getElementById('mainMenu');
+        const tabsWrapper = document.getElementById('tabsWrapper');
+        const liquorBtn = document.getElementById('liquorSectionBtn');
+        const foodBtn = document.getElementById('foodSectionBtn');
+
+        // Replace the existing liquorCategories array with this:
+const liquorCategories = [
+"Regular Whisky",
+"Vodka",
+"Rum",
+"Brandy",
+"Wine",
+"Beer",
+];
+
+        const foodCategories = [
+         "All Items",
+"Thali Special",
+"Snacks & Starters",
+"Veg Main Course",
+"Indian Breads",
+"Non-Veg Rice & Biryani",
+"Veg Rice Special",
+        ];
+
+        // Function to render category tabs based on section
+        function renderCategoryTabs(section) {
+            let categories = [];
+            
+            if (section === 'liquor') {
+                categories = liquorCategories;
+            } else {
+                categories = foodCategories;
+            }
+
+            // Split categories into two columns
+            const midPoint = Math.ceil(categories.length / 2);
+            const leftColumn = categories.slice(0, midPoint);
+            const rightColumn = categories.slice(midPoint);
+
+            let leftColumnHTML = '<div class="tabs-column">';
+            leftColumnHTML += '<button class="tab active" data-cat="all">All Items</button>';
+            leftColumn.forEach(cat => {
+                leftColumnHTML += `<button class="tab" data-cat="${cat}">${cat}</button>`;
+            });
+            leftColumnHTML += '</div>';
+
+            let rightColumnHTML = '<div class="tabs-column">';
+            rightColumn.forEach(cat => {
+                rightColumnHTML += `<button class="tab" data-cat="${cat}">${cat}</button>`;
+            });
+            rightColumnHTML += '</div>';
+
+            tabsWrapper.innerHTML = leftColumnHTML + rightColumnHTML;
+
+            // Re-attach event listeners to tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    filterByCategory(tab.dataset.cat);
+                });
+            });
+
+            // Show all items of the current section
+            filterBySection(section);
+        }
+
+        // Filter by section (food or liquor)
+        function filterBySection(section) {
+            let filteredItems = [];
+            
+            if (section === 'liquor') {
+                filteredItems = data.filter(item => liquorCategories.includes(item.cat));
+            } else {
+                filteredItems = data.filter(item => foodCategories.includes(item.cat));
+            }
+            
+            renderMenuItems(filteredItems);
+        }
+
+        // Filter by category within current section
+        function filterByCategory(category) {
+            let filteredItems = [];
+            
+            if (category === 'all') {
+                // Show all items in current section
+                if (currentSection === 'liquor') {
+                    filteredItems = data.filter(item => liquorCategories.includes(item.cat));
+                } else {
+                    filteredItems = data.filter(item => foodCategories.includes(item.cat));
+                }
+            } else {
+                filteredItems = data.filter(item => item.cat === category);
+            }
+            
+            renderMenuItems(filteredItems);
+        }
+
+        // Function to show menu
+        function showMenu() {
+            mainMenu.classList.add('visible');
+        }
+
+        // Function to hide menu
+        function hideMenu() {
+            mainMenu.classList.remove('visible');
+        }
+
+        // Section button event listeners
+        liquorBtn.addEventListener('click', () => {
+            liquorBtn.classList.add('active');
+            foodBtn.classList.remove('active');
+            currentSection = 'liquor';
+            renderCategoryTabs('liquor');
+            showMenu(); // Show menu when button is clicked
+        });
+
+        foodBtn.addEventListener('click', () => {
+            foodBtn.classList.add('active');
+            liquorBtn.classList.remove('active');
+            currentSection = 'food';
+            renderCategoryTabs('food');
+            showMenu(); // Show menu when button is clicked
+        });
+
+        // Delivery option selection
+        function selectDeliveryOption(type) {
+            deliveryType = type;
+
+            // Update button states
+            document.getElementById('restaurantOption').classList.toggle('active', type === 'restaurant');
+            document.getElementById('homeDeliveryOption').classList.toggle('active', type === 'home');
+
+            // Show/hide forms
+            document.getElementById('restaurantForm').classList.toggle('active', type === 'restaurant');
+            document.getElementById('homeDeliveryForm').classList.toggle('active', type === 'home');
+
+            // Update details summary
+            updateCustomerDetailsSummary();
+        }
+
+        // Update customer details summary
+        function updateCustomerDetailsSummary() {
+            let summaryHTML = '';
+            let showSummary = false;
+
+            if (deliveryType === 'restaurant') {
+                const tableNumber = document.getElementById('tableNumber').value.trim();
+
+                if (tableNumber) {
+                    showSummary = true;
+                    summaryHTML = `
+            <div class="summary-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 12v12M15 12v12M5 12l-2 9h18l-2-9M5 12V8c0-1.105.895-2 2-2h10c1.105 0 2 .895 2 2v4"/>
+                <circle cx="12" cy="6" r="2"/>
+              </svg>
+              Restaurant Order
+            </div>
+            <div class="summary-details">
+              <div><strong>Type:</strong> Dine-in</div>
+              <div><strong>Table Number:</strong> ${tableNumber}</div>
+            </div>
+          `;
+                }
+            } else {
+                const name = document.getElementById('customerName').value.trim();
+                const mobile = document.getElementById('customerMobile').value.trim();
+                const address = document.getElementById('customerAddress').value.trim();
+
+                if (name || mobile || address) {
+                    showSummary = true;
+                    summaryHTML = `
+            <div class="summary-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>
+              Delivery Order
+            </div>
+            <div class="summary-details">
+              <div><strong>Type:</strong> Home Delivery</div>
+              ${name ? `<div><strong>Name:</strong> ${name}</div>` : ''}
+              ${mobile ? `<div><strong>Mobile:</strong> ${mobile}</div>` : ''}
+              ${address ? `<div><strong>Address:</strong> ${address}</div>` : ''}
+            </div>
+          `;
+                }
+            }
+
+            if (showSummary) {
+                customerDetailsSummary.innerHTML = summaryHTML;
+                customerDetailsSummary.classList.add('active');
+            } else {
+                customerDetailsSummary.classList.remove('active');
+            }
+        }
+
+        // Toggle cart modal
+        cartButton.addEventListener('click', () => {
+            cartModal.classList.add('open');
+            updateCustomerDetailsSummary();
+        });
+
+        closeCart.addEventListener('click', () => {
+            cartModal.classList.remove('open');
+        });
+
+        // Add to cart function with animation
+        function addToCart(item, button) {
+            const existingItem = cart.find(cartItem => cartItem.id === item.id);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: 1
+                });
+            }
+
+            updateCart();
+
+            // Animation effect
+            button.classList.add('adding');
+            button.innerHTML = 'Adding...';
+
+            setTimeout(() => {
+                button.classList.remove('adding');
+                button.classList.add('added');
+                button.innerHTML = '✓ Added';
+
+                setTimeout(() => {
+                    button.classList.remove('added');
+                    button.innerHTML = 'Add to Cart';
+                }, 1000);
+            }, 500);
+        }
+
+        // Remove from cart function
+        function removeFromCart(itemId) {
+            cart = cart.filter(item => item.id !== itemId);
+            updateCart();
+        }
+
+        // Update quantity function
+        function updateQuantity(itemId, change) {
+            const item = cart.find(item => item.id === itemId);
+
+            if (item) {
+                item.quantity += change;
+
+                if (item.quantity <= 0) {
+                    removeFromCart(itemId);
+                } else {
+                    updateCart();
+                }
+            }
+        }
+
+        // Update cart display
+        function updateCart() {
+            // Update cart count
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+
+            // Update cart items
+            if (cart.length === 0) {
+                cartEmpty.style.display = 'block';
+                cartItems.innerHTML = '';
+            } else {
+                cartEmpty.style.display = 'none';
+
+                let itemsHTML = '';
+                let totalAmount = 0;
+
+                cart.forEach(item => {
+                    const price = parseInt(item.price.replace('₹', '').replace(' RS', ''));
+                    const itemTotal = price * item.quantity;
+                    totalAmount += itemTotal;
+
+                    itemsHTML += `
+            <div class="cart-item">
+              <div class="item-info">
+                <div class="item-name">${item.name}</div>
+                <div class="item-price">${item.price}</div>
+              </div>
+              <div class="item-quantity">
+                <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                <span class="quantity">${item.quantity}</span>
+                <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                <button class="remove-item" onclick="removeFromCart(${item.id})">×</button>
+              </div>
+            </div>
+          `;
+                });
+
+                cartItems.innerHTML = itemsHTML;
+                cartTotal.textContent = `₹${totalAmount}`;
+            }
+        }
+
+        // Clear cart
+        clearCart.addEventListener('click', () => {
+            cart = [];
+            updateCart();
+        });
+
+        // Add another item button functionality
+        addAnotherItem.addEventListener('click', () => {
+            cartModal.classList.remove('open');
+            
+            // Scroll to top of menu
+            window.scrollTo({
+                top: document.querySelector('.menu-head').offsetTop - 20,
+                behavior: 'smooth'
+            });
+            
+            // Focus on search to help user find items
+            setTimeout(() => {
+                document.getElementById('search').focus();
+            }, 500);
+        });
+
+        // WhatsApp order function with customer details
+        whatsappOrder.addEventListener('click', () => {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+
+            // Validate details based on delivery type
+            let validationPassed = true;
+            let validationMessage = '';
+
+            if (deliveryType === 'restaurant') {
+                const tableNumber = document.getElementById('tableNumber').value.trim();
+
+                if (!tableNumber) {
+                    validationPassed = false;
+                    validationMessage = 'Please enter your table number';
+                }
+            } else {
+                const customerName = document.getElementById('customerName').value.trim();
+                const customerMobile = document.getElementById('customerMobile').value.trim();
+                const customerAddress = document.getElementById('customerAddress').value.trim();
+
+                if (!customerName || !customerMobile || !customerAddress) {
+                    validationPassed = false;
+                    validationMessage = 'Please fill in all delivery details (Name, Mobile, Address)';
+                }
+            }
+
+            if (!validationPassed) {
+                alert(validationMessage);
+                return;
+            }
+
+            let message = `Hello! I would like to place an order:\n\n`;
+
+            // Add delivery details
+            if (deliveryType === 'restaurant') {
+                const tableNumber = document.getElementById('tableNumber').value.trim();
+
+                message += `*Delivery Type:* Dine-in\n`;
+                message += `*Table Number:* ${tableNumber}\n\n`;
+            } else {
+                const customerName = document.getElementById('customerName').value.trim();
+                const customerMobile = document.getElementById('customerMobile').value.trim();
+                const customerAddress = document.getElementById('customerAddress').value.trim();
+
+                message += `*Delivery Type:* Home Delivery\n`;
+                message += `*Name:* ${customerName}\n`;
+                message += `*Mobile:* ${customerMobile}\n`;
+                message += `*Address:* ${customerAddress}\n\n`;
+            }
+
+            message += `*Order Details:*\n`;
+
+            cart.forEach(item => {
+                message += `• ${item.name} - ${item.quantity} x ${item.price}\n`;
+            });
+
+            const totalAmount = cart.reduce((sum, item) => {
+                const price = parseInt(item.price.replace('₹', '').replace(' RS', ''));
+                return sum + (price * item.quantity);
+            }, 0);
+
+            message += `\n*Total Amount:* ₹${totalAmount}\n\n`;
+            message += `Thank you!`;
+
+            // Encode the message for WhatsApp URL
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappURL = `https://wa.me/919881321514?text=${encodedMessage}`;
+
+            // Open WhatsApp in a new tab
+            window.open(whatsappURL, '_blank');
+
+            // Close cart modal after order
+            setTimeout(() => {
+                cartModal.classList.remove('open');
+            }, 1000);
+        });
+
+        // Render menu items
+        function renderMenuItems(items) {
+            const menuGrid = document.getElementById('menuGrid');
+
+            if (items.length === 0) {
+                menuGrid.innerHTML = '<p style="text-align:center;color:var(--muted);grid-column:1/-1;padding:40px 20px">No items found</p>';
+                return;
+            }
+
+            menuGrid.innerHTML = items.map(item => `
+        <div class="card" data-cat="${item.cat}">
+          <div class="card-header">
+            <div class="thumb">
+              <img src="${item.img}" alt="${item.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiBmaWxsPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDMpIi8+CjxwYXRoIGQ9Ik03MCA4MEgxMTBNODAgNzBWOTBNNjUgOTVIMTA1TTk1IDY1VjEwNU02NSA2NVYxMDVNNzUgNzVIOThNNzUgODVIOThNNzUgOTVIOThNNzUgMTA1SDk4TTY1IDc1SDcyTTY1IDg1SDcyTTY1IDk1SDcyTTY1IDEwNUg3Mk0xMDggNzVIMTE1TTEwOCA4NUgxMTVNMTA4IDk1SDExNU0xMDggMTA1SDExNSIgc3Ryb2tlPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMSkiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+'">
+            </div>
+            <div class="card-info">
+              <h3 class="dish">${item.name}</h3>
+              <p class="desc">${item.desc}</p>
+              <div class="tags">
+                ${item.tags.map(tag => `<span class="pill">${tag}</span>`).join('')}
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="price">${item.price}</div>
+            <button class="btn-primary" onclick="addToCart(${JSON.stringify(item).replace(/"/g, '&quot;')}, this)">Add to Cart</button>
+          </div>
+        </div>
+      `).join('');
+        }
+
+        // Search functionality
+        function searchItems(query) {
+            // Determine which items to search based on current section
+            let itemsToSearch = [];
+            
+            if (currentSection === 'liquor') {
+                itemsToSearch = data.filter(item => liquorCategories.includes(item.cat));
+            } else {
+                itemsToSearch = data.filter(item => foodCategories.includes(item.cat));
+            }
+            
+            const filteredItems = itemsToSearch.filter(item =>
+                item.name.toLowerCase().includes(query.toLowerCase()) ||
+                item.desc.toLowerCase().includes(query.toLowerCase()) ||
+                item.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
+            );
+            
+            renderMenuItems(filteredItems);
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set default delivery option
+            selectDeliveryOption('restaurant');
+
+            // Menu is hidden by default (no .visible class)
+            // We don't initialize any section or render any items until button click
+
+            // Search functionality - but search is disabled until menu is visible
+            document.getElementById('search').addEventListener('input', (e) => {
+                if (mainMenu.classList.contains('visible')) {
+                    searchItems(e.target.value);
+                }
+            });
+
+            // Update details summary when form inputs change
+            document.getElementById('tableNumber').addEventListener('input', updateCustomerDetailsSummary);
+            document.getElementById('customerName').addEventListener('input', updateCustomerDetailsSummary);
+            document.getElementById('customerMobile').addEventListener('input', updateCustomerDetailsSummary);
+            document.getElementById('customerAddress').addEventListener('input', updateCustomerDetailsSummary);
+        });
+
+        // Make functions available globally
+        window.addToCart = addToCart;
+        window.removeFromCart = removeFromCart;
+        window.updateQuantity = updateQuantity;
+        window.selectDeliveryOption = selectDeliveryOption;
+    </script>
+</body>
+
+</html>
